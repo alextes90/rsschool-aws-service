@@ -60,11 +60,45 @@ provider:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: handler.handler
     events:
       - http:
-          path: product
+          path: products
           method: get
+          cors: true
+  getProductById:
+    handler: product.handler
+    events:
+      - http:
+          path: products/{id}
+          method: get
+          cors: true
+          documentation:
+            summary: Get products by Path id param
+            description: Get the product data and sends it back
+            pathParams:
+              - name: id
+            methodResponses:
+              - statusCode: 200
+                responseBody:
+                  description: Product name, description and price
+                responseModels:
+                  application/json: PutDocumentResponse
+              - statusCode: 500
+                responseBody:
+                  description: Failed to get product with given id
+                responseModels:
+                  application/json: ErrorResponse
+
+plugins:
+  - serverless-openapi-documentation
+
+custom:
+  documentation:
+    version: "1"
+    title: "My API"
+    description: "This is my API"
+    models: {}
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
